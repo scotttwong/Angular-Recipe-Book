@@ -1,4 +1,5 @@
 import { Component, Output, EventEmitter } from '@angular/core';
+import { DataStorageService } from '../shared/datastorage.service';
 
 @Component({
     selector: 'app-header',
@@ -13,4 +14,18 @@ export class HeaderComponent {
     // viewPage(pageName: string) {
     //     this.clickedPage.emit(pageName);
     // }
+
+    constructor(private dataStorageService: DataStorageService) {}
+
+    onUpdateData() {
+        this.dataStorageService.updateRecipes().subscribe(
+            (response) => {
+                console.log(response);
+            }
+        );
+    }
+
+    onFetchData() {
+        this.dataStorageService.getRecipes().subscribe();
+    }
 }

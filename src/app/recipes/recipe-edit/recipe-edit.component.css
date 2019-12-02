@@ -1,0 +1,9 @@
+#ingredients .row {
+    margin-bottom: 5px;
+}
+
+input.ng-touched.ng-invalid,
+select.ng-touched.ng-invalid {
+    border: 1px solid red;
+    background-color: LavenderBlush;
+}
