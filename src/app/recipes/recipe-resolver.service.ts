@@ -5,20 +5,20 @@ import { Observable } from 'rxjs';
 import { DataStorageService } from '../shared/datastorage.service';
 import { RecipeService } from './recipe.service';
 
-@Injectable({ providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 
 export class RecipeResolverService implements Resolve<Recipe[]> {
-    constructor(
-        private dataStorageService: DataStorageService,
-        private recipeService: RecipeService) {}
+  constructor(
+    private dataStorageService: DataStorageService,
+    private recipeService: RecipeService) { }
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Recipe[]> | Promise<Recipe[]> | Recipe[] {
-        const recipes = this.recipeService.getRecipes();
+  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Recipe[]> | Promise<Recipe[]> | Recipe[] {
+    const recipes = this.recipeService.getRecipes();
 
-        if (recipes.length === 0) {
-            return this.dataStorageService.getRecipes();
-        } else {
-            return recipes;
-        }
+    if (recipes.length === 0) {
+      return this.dataStorageService.getRecipes();
+    } else {
+      return recipes;
     }
+  }
 }
