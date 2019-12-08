@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from './auth/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -9,7 +10,12 @@ export class AppComponent implements OnInit {
   title = 'angular-recipe-book';
   pageName: string;
 
+  constructor(
+    private authService: AuthService
+  ) { }
+
   ngOnInit() {
     this.pageName = 'recipes';
+    this.authService.setUserFromStorage();
   }
 }

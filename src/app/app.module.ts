@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { RecipesComponent } from './recipes/recipes.component';
@@ -17,6 +17,12 @@ import { AppRoutingModule } from './app-routing.module';
 import { RecipeStartComponent } from './recipes/recipe-start/recipe-start.component';
 import { RecipeEditComponent } from './recipes/recipe-edit/recipe-edit.component';
 import { RecipeService } from './recipes/recipe.service';
+import { AuthComponent } from './auth/auth.component';
+import { LoadingSpinnerComponent } from './shared/loading-spinner/loading-spinner.component';
+import { AuthGuard } from './auth/auth-guard.service';
+import { AuthInterceptorService } from './auth/auth-interceptor.service';
+import { AlertModalComponent } from './shared/alert-modal/alert-modal.component';
+import { DynamicCompPlaceholderDirective } from './shared/dynamic-comp-placeholder/dynamic-comp-placeholder.directive';
 
 @NgModule({
   declarations: [
@@ -30,7 +36,11 @@ import { RecipeService } from './recipes/recipe.service';
     HeaderComponent,
     DropdownDirective,
     RecipeStartComponent,
-    RecipeEditComponent
+    RecipeEditComponent,
+    AuthComponent,
+    LoadingSpinnerComponent,
+    AlertModalComponent,
+    DynamicCompPlaceholderDirective
   ],
   imports: [
     BrowserModule,
@@ -41,8 +51,17 @@ import { RecipeService } from './recipes/recipe.service';
   ],
   providers: [
     ShoppingListService,
-    RecipeService
+    RecipeService,
+    AuthGuard,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptorService,
+      multi: true
+    }
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [
+    AlertModalComponent
+  ]
 })
 export class AppModule { }
