@@ -13,7 +13,7 @@ import { Ingredient } from 'src/app/shared/ingredient-model';
 export class RecipeEditComponent implements OnInit {
   recipe: Recipe;
   recipeIndex: number;
-  editMode: boolean = false;
+  editMode = false;
   appForm: FormGroup;
 
   constructor(private route: ActivatedRoute, private recipeService: RecipeService, private router: Router) { }
@@ -21,7 +21,7 @@ export class RecipeEditComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe(
       (params: Params) => {
-        this.recipeIndex = +params['id'];
+        this.recipeIndex = +params.id;
         this.editMode = this.recipeIndex != null && !isNaN(this.recipeIndex);
         this.recipe = this.editMode ? this.recipeService.getRecipe(this.recipeIndex) : null;
 
@@ -29,15 +29,15 @@ export class RecipeEditComponent implements OnInit {
           this.navigateToRecipeDetail(null);
         }
       }
-    )
+    );
     this.initForm();
-  }  
+  }
 
   initForm() {
     let recipeName = null;
     let recipeDescription = null;
     let recipeImagePath = null;
-    let recipeIngredients = new FormArray([]);
+    const recipeIngredients = new FormArray([]);
 
     if (this.recipe) {
       recipeName = this.recipe.name;
@@ -45,36 +45,36 @@ export class RecipeEditComponent implements OnInit {
       recipeImagePath = this.recipe.imagePath;
 
       if (this.recipe.ingredients) {
-        for (let ingredient of this.recipe.ingredients) {
+        for (const ingredient of this.recipe.ingredients) {
           recipeIngredients.push(
             new FormGroup({
-              'name': new FormControl(ingredient.name, Validators.required),
-              'amount': new FormControl(ingredient.amount, [Validators.required, Validators.pattern(/^[1-9]+[0-9]*$/)])
+              name: new FormControl(ingredient.name, Validators.required),
+              amount: new FormControl(ingredient.amount, [Validators.required, Validators.pattern(/^[1-9]+[0-9]*$/)])
             })
-          )
+          );
         }
       }
     }
 
     this.appForm = new FormGroup({
-      'name': new FormControl(recipeName, Validators.required),
-      'description': new FormControl(recipeDescription),
-      'imagePath': new FormControl(recipeImagePath),
-      'ingredients': recipeIngredients
+      name: new FormControl(recipeName, Validators.required),
+      description: new FormControl(recipeDescription),
+      imagePath: new FormControl(recipeImagePath),
+      ingredients: recipeIngredients
     });
   }
 
   onAddIngredient() {
-    (<FormArray>this.appForm.get('ingredients')).push(
+    (this.appForm.get('ingredients') as FormArray).push(
       new FormGroup({
-        'name': new FormControl(null, Validators.required),
-        'amount': new FormControl(null, [Validators.required, Validators.pattern(/^[1-9]+[0-9]*$/)])
+        name: new FormControl(null, Validators.required),
+        amount: new FormControl(null, [Validators.required, Validators.pattern(/^[1-9]+[0-9]*$/)])
       }
-    ));
+      ));
   }
 
   onRemoveIngredient(index: number) {
-    (<FormArray>this.appForm.get('ingredients')).removeAt(index);
+    (this.appForm.get('ingredients') as FormArray).removeAt(index);
   }
 
   onClearForm() {
@@ -87,17 +87,17 @@ export class RecipeEditComponent implements OnInit {
       this.router.navigate(['../'], { relativeTo: this.route });
       return;
     }
-      
+
     if (!this.editMode && !isNaN(index) && index != null) {
       this.router.navigate(['../', index], { relativeTo: this.route });
       return;
     }
-      
+
     this.router.navigate(['/recipes']);
   }
 
   get ingredientCtrls() {
-    return (<FormArray>this.appForm.get('ingredients')).controls;
+    return (this.appForm.get('ingredients') as FormArray).controls;
   }
 
   onSubmit() {
@@ -108,7 +108,7 @@ export class RecipeEditComponent implements OnInit {
     //   this.appForm.value['imagePath'],
     //   this.appForm.value['ingredients']
     // );
-    let id:number;
+    let id: number;
     if (this.editMode) {
       id = this.recipeService.updateRecipe(this.recipeIndex, this.appForm.value);
     } else {
