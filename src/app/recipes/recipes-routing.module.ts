@@ -11,7 +11,7 @@ import { RecipeDetailComponent } from './recipe-detail/recipe-detail.component';
 
 const routes = [
   {
-    path: 'recipes',
+    path: '',
     component: RecipesComponent,
     resolve: [RecipeResolverService],
     canActivate: [AuthGuard],

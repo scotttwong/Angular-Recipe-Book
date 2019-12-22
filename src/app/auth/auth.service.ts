@@ -4,6 +4,7 @@ import { map, catchError, tap } from 'rxjs/operators';
 import { throwError, Observable, BehaviorSubject } from 'rxjs';
 import { User } from './user.model';
 import { Router } from '@angular/router';
+import { environment } from '../../environments/environment';
 
 export interface AuthResponse {
   idToken: string;
@@ -18,7 +19,6 @@ export interface AuthResponse {
 
 export class AuthService {
 
-  private apiKey = 'AIzaSyA1p3qW1DYWB-EJcz2QVA-tmLaFFMW6lBU';
   private userTimeoutID: any;
 
   currentUser: BehaviorSubject<User> = new BehaviorSubject(null);
@@ -34,7 +34,7 @@ export class AuthService {
       'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword',
       formUser,
       {
-        params: { key: this.apiKey }
+        params: { key: environment.firebaseApiKey }
       }
     ).pipe(
       catchError(res => this.handleErrorMessage(res)),
@@ -48,7 +48,7 @@ export class AuthService {
       'https://identitytoolkit.googleapis.com/v1/accounts:signUp',
       formUser,
       {
-        params: { key: this.apiKey }
+        params: { key: environment.firebaseApiKey }
       }
     ).pipe(
       catchError(res => this.handleErrorMessage(res)),
