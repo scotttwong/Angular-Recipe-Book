@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-xs-12">
-        <form (ngSubmit)="addEditIngredient()" #f="ngForm">
+        <form (ngSubmit)="submitIngredient()" #f="ngForm">
             <div class="row">
                 <div class="col-xs-5 form-group">
                     <label for="name">Name</label>
@@ -8,13 +8,13 @@
                 </div>
                 <div class="col-xs-2 form-group">
                     <label for="amount">Amount</label>
-                    <input 
-                        ngModel 
-                        name="amount" 
-                        #amountInput 
-                        type="number" 
-                        id="amount" 
-                        class="form-control" 
+                    <input
+                        ngModel
+                        name="amount"
+                        #amountInput
+                        type="number"
+                        id="amount"
+                        class="form-control"
                         required
                         [pattern]="'^[1-9]+[0-9]*$'">
                 </div>

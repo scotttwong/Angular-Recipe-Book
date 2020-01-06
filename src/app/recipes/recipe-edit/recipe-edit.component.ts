@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { RecipeService } from '../recipe.service';
-import { Recipe } from '../recipe.model';
 import { FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
-import { Ingredient } from 'src/app/shared/ingredient-model';
+import { Store } from '@ngrx/store';
+import { map, switchMap, tap, take } from 'rxjs/operators';
+
+import { Recipe } from '../recipe.model';
+import * as RecipeActions from '../store/recipe.actions';
+import * as fromApp from 'src/app/store/app.reducer';
 
 @Component({
   selector: 'app-recipe-edit',
@@ -16,21 +19,27 @@ export class RecipeEditComponent implements OnInit {
   editMode = false;
   appForm: FormGroup;
 
-  constructor(private route: ActivatedRoute, private recipeService: RecipeService, private router: Router) { }
+  constructor(private route: ActivatedRoute, private router: Router, private store: Store<fromApp.AppState>) {}
 
   ngOnInit() {
-    this.route.params.subscribe(
-      (params: Params) => {
-        this.recipeIndex = +params.id;
+    this.route.params
+      .pipe(
+        map((params: Params) => +params.id),
+        switchMap(id => {
+          this.recipeIndex = id;
+          return this.store.select('recipes');
+        }),
+        map(recipeState => recipeState.recipes[this.recipeIndex])
+      )
+      .subscribe(recipe => {
         this.editMode = this.recipeIndex != null && !isNaN(this.recipeIndex);
-        this.recipe = this.editMode ? this.recipeService.getRecipe(this.recipeIndex) : null;
+        this.recipe = this.editMode ? recipe : null;
 
         if (this.recipeIndex >= 0 && this.recipe == null) {
           this.navigateToRecipeDetail(null);
         }
-      }
-    );
-    this.initForm();
+        this.initForm();
+      });
   }
 
   initForm() {
@@ -69,8 +78,8 @@ export class RecipeEditComponent implements OnInit {
       new FormGroup({
         name: new FormControl(null, Validators.required),
         amount: new FormControl(null, [Validators.required, Validators.pattern(/^[1-9]+[0-9]*$/)])
-      }
-      ));
+      })
+    );
   }
 
   onRemoveIngredient(index: number) {
@@ -82,7 +91,6 @@ export class RecipeEditComponent implements OnInit {
   }
 
   navigateToRecipeDetail(index: number): void {
-
     if (this.editMode) {
       this.router.navigate(['../'], { relativeTo: this.route });
       return;
@@ -101,18 +109,19 @@ export class RecipeEditComponent implements OnInit {
   }
 
   onSubmit() {
-    // console.log(this.appForm);
-    // const recipe = new Recipe(
-    //   this.appForm.value['name'],
-    //   this.appForm.value['description'],
-    //   this.appForm.value['imagePath'],
-    //   this.appForm.value['ingredients']
-    // );
     let id: number;
+    const submittedRecipe = this.appForm.value;
     if (this.editMode) {
-      id = this.recipeService.updateRecipe(this.recipeIndex, this.appForm.value);
+      this.store.dispatch(new RecipeActions.UpdateRecipe({ recipe: submittedRecipe, index: this.recipeIndex }));
+      id = this.recipeIndex;
     } else {
-      id = this.recipeService.addRecipe(this.appForm.value);
+      this.store.dispatch(new RecipeActions.AddRecipe(submittedRecipe));
+      this.store.select('recipes').pipe(
+        take(1),
+        tap(recipeState => {
+          id = recipeState.recipes.length;
+        })
+      );
     }
     this.navigateToRecipeDetail(id);
   }

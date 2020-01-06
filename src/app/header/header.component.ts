@@ -1,58 +1,42 @@
-import { Component, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
-import { DataStorageService } from '../shared/datastorage.service';
-import { AuthService } from '../auth/auth.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
+
+import * as AuthActions from '../auth/store/auth.actions';
 import { User } from '../auth/user.model';
-import { Router } from '@angular/router';
+import * as fromAppState from '../store/app.reducer';
+import * as RecipeActions from '../recipes/store/recipe.actions';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-
 export class HeaderComponent implements OnInit, OnDestroy {
-  // @Output() clickedPage: EventEmitter<string> = new EventEmitter();
-
-  private userSub: Subscription;
   collapsed = true;
   authUser: User = null;
 
-  // viewPage(pageName: string) {
-  //     this.clickedPage.emit(pageName);
-  // }
+  private userSub: Subscription;
 
-  constructor(
-    private dataStorageService: DataStorageService,
-    private authService: AuthService,
-    private router: Router
-  ) { }
+  constructor(private store$: Store<fromAppState.AppState>) {}
 
   ngOnInit(): void {
-    this.userSub = this.authService.currentUser.subscribe(user => {
-      this.authUser = user;
+    this.userSub = this.store$.select('auth').subscribe(stateData => {
+      this.authUser = stateData.user;
     });
   }
 
   onUpdateData() {
-    this.dataStorageService.updateRecipes().subscribe();
+    // this.dataStorageService.updateRecipes().subscribe();
+    this.store$.dispatch(new RecipeActions.PostRecipes());
   }
 
   onLogOut() {
-    this.authService.logOutUser();
+    this.store$.dispatch(new AuthActions.Logout());
   }
 
   onFetchData() {
-    this.dataStorageService.getRecipes().subscribe(
-      res => {
-        console.log('onFetchData() subscribe');
-        console.log(res);
-      },
-      error => {
-        console.log('onFetchData() error');
-        console.log(error);
-      }
-    );
+    this.store$.dispatch(new RecipeActions.FetchRecipes());
   }
 
   ngOnDestroy(): void {

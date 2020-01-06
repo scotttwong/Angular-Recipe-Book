@@ -1,28 +1,30 @@
 <nav class="navbar navbar-default">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a href="#" class="navbar-brand">Recipe Book</a>
-            <button class="navbar-toggle" (click)="collapsed = !collapsed">
-                <span class="icon-bar" *ngFor="let iconBar of [1,2,3]"></span>
-            </button>
-        </div>
-        <div class="navbar-collapse" [class.collapse]="collapsed" (window:resize)="collapsed = true">
-            <ul class="nav navbar-nav">
-                <li routerLinkActive="active" *ngIf="authUser"><a routerLink="/recipes">Recipes</a></li>
-                <li routerLinkActive="active"><a routerLink="/shoppinglist">Shopping List</a></li>
-                <li routerLinkActive="active"><a routerLink="/auth" *ngIf="!authUser">Authenticate</a></li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li *ngIf="authUser" ><a style="cursor: none; pointer-events: none">{{ authUser.email }}</a></li>
-                <li *ngIf="authUser" (click)="onLogOut()"><a style="cursor: pointer">Logout</a></li>                
-                <li class="dropdown" appDropdown>
-                    <a style="cursor: pointer" class="dropdown-toggle" role="button">Manage <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a style="cursor: pointer" (click)="onUpdateData()">Save Data</a></li>
-                        <li><a style="cursor: pointer" (click)="onFetchData()">Fetch Data</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="#" class="navbar-brand">Recipe Book</a>
+      <button class="navbar-toggle" (click)="collapsed = !collapsed">
+        <span class="icon-bar" *ngFor="let iconBar of [1, 2, 3]"></span>
+      </button>
     </div>
+    <div class="navbar-collapse" [class.collapse]="collapsed" (window:resize)="collapsed = true">
+      <ul class="nav navbar-nav">
+        <li routerLinkActive="active" *ngIf="authUser"><a routerLink="/recipes">Recipes</a></li>
+        <li routerLinkActive="active"><a routerLink="/shoppinglist">Shopping List</a></li>
+        <li routerLinkActive="active"><a routerLink="/auth" *ngIf="!authUser">Authenticate</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li *ngIf="authUser">
+          <a style="cursor: none; pointer-events: none">{{ authUser.email }}</a>
+        </li>
+        <li *ngIf="authUser" (click)="onLogOut()"><a style="cursor: pointer">Logout</a></li>
+        <li class="dropdown" appDropdown>
+          <a style="cursor: pointer" class="dropdown-toggle" role="button">Manage <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a style="cursor: pointer" (click)="onUpdateData()">Save Data</a></li>
+            <li><a style="cursor: pointer" (click)="onFetchData()">Fetch Data</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
 </nav>

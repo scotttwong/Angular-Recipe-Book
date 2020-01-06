@@ -12,80 +12,38 @@
       <hr />
       <div class="form-group">
         <label for="name">Name:</label>
-        <input
-          type="text"
-          name="name"
-          id="name"
-          class="form-control"
-          formControlName="name"
-        />
+        <input type="text" name="name" id="name" class="form-control" formControlName="name" />
       </div>
       <div class="form-group">
         <label for="imagePath">Image URL:</label>
-        <input
-          type="text"
-          name="imagePath"
-          id="imagePath"
-          class="form-control"
-          formControlName="imagePath"
-          #imagePath
-        />
+        <input type="text" name="imagePath" id="imagePath" class="form-control" formControlName="imagePath" #imagePath />
       </div>
       <div class="form-group">
         <img [src]="imagePath.value" alt="" class="img-responsive" />
       </div>
       <div class="form-group">
         <label for="description">Description:</label>
-        <textarea
-          type="text"
-          rows="6"
-          name="description"
-          id="description"
-          class="form-control"
-          formControlName="description"
-        ></textarea>
+        <textarea type="text" rows="6" name="description" id="description" class="form-control" formControlName="description"></textarea>
       </div>
       <div class="row">
         <div class="col-xs-12" formArrayName="ingredients" id="ingredients">
           <label for="ingredients">Ingredients</label>
-          <div
-            class="row"
-            *ngFor="let ingredientCtrl of ingredientCtrls; let i = index"
-            [formGroupName]="i"
-          >
+          <div class="row" *ngFor="let ingredientCtrl of ingredientCtrls; let i = index" [formGroupName]="i">
             <div class="col-xs-8">
-              <input
-                type="text"
-                formControlName="name"
-                class="form-control"
-                placeholder="Ingredient"
-              />
+              <input type="text" formControlName="name" class="form-control" placeholder="Ingredient" />
             </div>
             <div class="col-xs-2">
-              <input
-                type="text"
-                formControlName="amount"
-                class="form-control"
-                placeholder="Amount"
-              />
+              <input type="text" formControlName="amount" class="form-control" placeholder="Amount" />
             </div>
             <div class="col-xs-2">
-              <button
-                type="button"
-                class="btn btn-danger"
-                (click)="onRemoveIngredient(i)"
-              >
+              <button type="button" class="btn btn-danger" (click)="onRemoveIngredient(i)">
                 X
               </button>
             </div>
           </div>
         </div>
         <div class="col-xs-12">
-          <button
-            type="button"
-            class="btn btn-primary"
-            (click)="onAddIngredient()"
-          >
+          <button type="button" class="btn btn-primary" (click)="onAddIngredient()">
             Add Ingredient
           </button>
         </div>
