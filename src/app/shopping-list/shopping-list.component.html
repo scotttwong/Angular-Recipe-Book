@@ -4,14 +4,14 @@
         <hr>
         <h1>Shopping List</h1>
         <ul class="list-group">
-            <a 
-                class="list-group-item" 
-                style="cursor:pointer" 
+            <a
+                class="list-group-item"
+                style="cursor:pointer"
                 [ngStyle]="{'background-color': i === selectedIngredientIndex ? 'antiquewhite' : null}"
-                *ngFor="let ingredient of ingredients; let i = index" 
+                *ngFor="let ingredient of ingredients; let i = index"
                 (click)="ingredientSelected(i)">
                 {{ingredient.name}} ({{ingredient.amount}})
             </a>
-        </ul>   
+        </ul>
     </div>
 </div>

@@ -4,6 +4,5 @@ import { Directive, ViewContainerRef } from '@angular/core';
   selector: '[appDynamicCompPlaceholder]'
 })
 export class DynamicCompPlaceholderDirective {
-
-  constructor(public viewContainerRef: ViewContainerRef) { }
+  constructor(public viewContainerRef: ViewContainerRef) {}
 }

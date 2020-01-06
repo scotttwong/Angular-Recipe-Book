@@ -1,7 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Ingredient } from '../shared/ingredient-model';
-import { ShoppingListService } from './shopping-list.service';
 import { Subscription } from 'rxjs';
+import { Store } from '@ngrx/store';
+
+import { Ingredient } from '../shared/ingredient-model';
+import * as ShoppingListActions from './store/shopping-list.actions';
+import * as fromApp from 'src/app/store/app.reducer';
+
 
 @Component({
   selector: 'app-shopping-list',
@@ -10,33 +14,26 @@ import { Subscription } from 'rxjs';
 })
 export class ShoppingListComponent implements OnInit, OnDestroy {
   ingredients: Ingredient[] = [];
-  ingredientsChangedSub: Subscription;
-  ingredientSelectedSub: Subscription;
   selectedIngredientIndex: number;
+  storeSub: Subscription;
 
-  constructor(private shoppingListService: ShoppingListService) { }
+  constructor(
+    private store: Store<fromApp.AppState>
+  ) { }
 
   ngOnInit() {
-    this.ingredients = this.shoppingListService.getIngredients();
-    this.ingredientsChangedSub = this.shoppingListService.ingredientsChangedSub.subscribe((updatedIngredients: Ingredient[]) => {
-      this.ingredients = updatedIngredients;
+    this.storeSub = this.store.select('shoppingList').subscribe(stateData => {
+      this.ingredients = stateData.ingredients;
+      this.selectedIngredientIndex = stateData.editedIngredientIndex;
     });
-    this.ingredientSelectedSub = this.shoppingListService.ingredientSelectedSub.subscribe((index) => {
-      this.selectedIngredientIndex = index;
-    })
   }
 
   ingredientSelected(index: number) {
     this.selectedIngredientIndex = index;
-    this.shoppingListService.ingredientSelectedSub.next(index);
+    this.store.dispatch(new ShoppingListActions.StartEdit(index));
   }
 
-  // ingredientSelected(index: number) {
-  //   this.shoppingListService.ingredientSelected.next(index);
-  // }
-
   ngOnDestroy() {
-    this.ingredientsChangedSub.unsubscribe();
-    this.ingredientSelectedSub.unsubscribe();
+    this.storeSub.unsubscribe();
   }
 }
